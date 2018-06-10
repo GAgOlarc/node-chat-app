@@ -17,7 +17,7 @@ describe('generateLocationMessage', () => {
         const from = 'Admin';
         const lat = 47.8638056;
         const lon = 17.2510891;
-        const url = 'https://www.google.com/maps?q=17.2510891,47.8638056';
+        const url = 'https://www.google.com/maps?q=47.8638056,17.2510891';
         const message = generateLocationMessage(from, lat, lon);
 
         expect(message.createdAt).toBeA('number');
