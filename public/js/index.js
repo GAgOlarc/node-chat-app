@@ -10,19 +10,26 @@ socket.on('disconnect', function () {
 
 socket.on('newMessage', function (message) {
     const formattedTime = moment(message.createdAt).format('LT');
-    const li = $('<li></li>');
-    li.text(`${message.from} ${formattedTime}: ${message.text}`);
-    $('#messages').append(li);
+    const template = $('#message-template').html();
+    const html = Mustache.render(template, {
+        from: message.from,
+        createdAt: formattedTime,
+        text: message.text
+    });
+
+    $('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function (message) {
     const formattedTime = moment(message.createdAt).format('LT');
-    const li = $('<li></li>');
-    const a = $('<a target="_blank">My current location</a>');
-    li.text(`${message.from} ${formattedTime}: `);
-    a.attr('href', message.url);
-    li.append(a);
-    $('#messages').append(li);
+    const template = $('#location-message-template').html();
+    const html = Mustache.render(template, {
+        from: message.from,
+        createdAt: formattedTime,
+        url: message.url
+    });
+
+    $('#messages').append(html);
 });
 
 $('#message-form').on('submit', function (e) {
@@ -46,7 +53,7 @@ locationButton.on('click', function () {
     }
 
     locationButton.attr('disabled', 'disabled').text('Sending location...');
-    
+
     navigator.geolocation.getCurrentPosition(function (position) {
         locationButton.removeAttr('disabled').text('Send location');
         socket.emit('createLocationMessage', {
